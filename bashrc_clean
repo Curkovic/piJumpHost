@@ -1,0 +1,50 @@
+# ==============================
+# piJumpHost - Clean Edition
+# https://github.com/curkovic/piJumpHost
+# ==============================
+
+# -------- CONFIGURATION --------
+TARGET_HOST="server.local"
+TARGET_USER="username"
+CONNECT_TIMEOUT=5
+# -------------------------------
+
+jump() {
+
+    # Boot animation
+    echo -e "\033[1;35m"
+    echo -n ">> INITIALIZING piJumpHost"
+    for i in {1..3}; do
+        echo -n "."
+        sleep 0.5
+    done
+    echo -e " [Ready]"
+
+    # Status
+    echo -e "\033[1;32m[AUTH] Public-key identity loaded\033[0m"
+    echo -e "\033[1;36m[TARGET] ${TARGET_HOST}\033[0m"
+    echo -e "\033[1;34m[STATE] Ready to establish secure session\033[0m"
+    echo
+
+    echo -e "\033[0;36m"
+    echo "------------------------------------------------"
+    echo "              piJumpHost"
+    echo
+    echo "Connecting to ${TARGET_HOST} in 5 seconds..."
+    echo "Press 'n' to cancel."
+    echo "------------------------------------------------"
+    echo -e "\033[0m"
+
+    read -t 5 -n 1 key
+
+    if [[ "$key" == "n" ]]; then
+        echo
+        echo "Connection cancelled."
+        return
+    fi
+
+    echo
+    ssh -o ConnectTimeout="${CONNECT_TIMEOUT}" "${TARGET_USER}@${TARGET_HOST}"
+}
+
+jump
