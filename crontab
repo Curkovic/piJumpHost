@@ -1,0 +1,16 @@
+# Reboot weekly to recover from rare long-term issues.
+# If your Pi is mission-critical, you may prefer to remove this.
+0 4 * * 0 /sbin/shutdown -r now
+
+# Keep the system patched automatically.
+# Runs on the first day of each month.
+0 3 1 * * dpkg --configure -a --force-confold && apt update && apt full-upgrade -y && apt autoremove -y && apt clean
+
+# Prevent logs from filling the SD card.
+0 2 * * 0 journalctl --vacuum-time=7d
+
+# Restart SSH if it ever stops responding.
+*/15 * * * * systemctl is-active --quiet ssh || systemctl restart ssh
+
+# Restart Raspberry Pi Connect if it isn't running.
+*/15 * * * * systemctl --user -M mate@ is-active --quiet rpi-connect || systemctl --user -M mate@ restart rpi-connect
